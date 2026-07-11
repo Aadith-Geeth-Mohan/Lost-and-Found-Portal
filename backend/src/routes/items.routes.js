@@ -24,6 +24,13 @@ router.get('/:id', async (req, res) => res.json(await Item.findById(req.params.i
 router.put('/:id', auth, async (req, res) => res.json(await Item.findByIdAndUpdate(req.params.id, req.body, { new: true })));
 router.delete('/:id', auth, async (req, res) => { await Item.findByIdAndDelete(req.params.id); res.json({ ok: true }); });
 
-
+const admin = require('../middleware/admin.middleware');
+router.get('/admin/all', auth, admin, async (req, res) => {
+  res.json(await Item.find().populate('user', 'name email').sort({ createdAt: -1 }));
+});
+router.patch('/admin/:id/status', auth, admin, async (req, res) => {
+  const item = await Item.findByIdAndUpdate(req.params.id, { status: req.body.status }, { new: true });
+  res.json(item);
+});
 
 module.exports = router;
