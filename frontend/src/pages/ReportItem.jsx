@@ -3,7 +3,7 @@ import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 
 export default function ReportItem() {
-  const [form, setForm] = useState({ title: '', description: '', category: '', type: 'lost', location: '' });
+  const [form, setForm] = useState({ title: '', description: '', category: '', type: 'lost', location: '', contact: '' });
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -131,6 +131,16 @@ export default function ReportItem() {
                   onChange={e => setForm({ ...form, location: e.target.value })}
                 />
               </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-primary-700">Contact (phone or email)</label>
+              <input
+                className="w-full px-4 py-3 bg-primary-50 border border-primary-200 rounded-xl text-primary-800 placeholder-primary-400 focus:bg-white focus:border-primary-400 focus:ring-4 focus:ring-primary-100 outline-none transition-all duration-200"
+                placeholder="How should people reach you?"
+                required
+                onChange={e => setForm({ ...form, contact: e.target.value })}
+              />
             </div>
 
             {/* Image Upload */}

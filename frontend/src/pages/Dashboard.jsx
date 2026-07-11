@@ -18,6 +18,12 @@ export default function Dashboard() {
     setItems(items.filter(i => i._id !== id));
   };
 
+  const resolve = async (id) => {
+    if (!confirm('Mark this item as resolved? This indicates the item has been returned to its owner.')) return;
+    await api.put(`/items/${id}`, { status: 'resolved' });
+    setItems(items.map(i => i._id === id ? { ...i, status: 'resolved' } : i));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-blue-50 py-10 px-4">
       <div className="max-w-6xl mx-auto">
@@ -64,15 +70,35 @@ export default function Dashboard() {
               {items.map((item, i) => (
                 <div key={item._id} className="animate-fade-in" style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}>
                   <ItemCard item={item} index={0} />
-                  <button
-                    onClick={() => remove(item._id)}
-                    className="w-full mt-2 py-2 text-sm font-medium text-red-500 bg-red-50 hover:bg-red-100 rounded-xl border border-red-100 transition-all duration-200 flex items-center justify-center gap-1.5"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Delete Report
-                  </button>
+                  <div className="flex gap-2 mt-2">
+                    {item.status === 'open' ? (
+                      <button
+                        onClick={() => resolve(item._id)}
+                        className="flex-1 py-2 text-sm font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-xl border border-emerald-100 transition-all duration-200 flex items-center justify-center gap-1.5"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Mark Resolved
+                      </button>
+                    ) : (
+                      <div className="flex-1 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-xl border border-green-100 flex items-center justify-center gap-1.5">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Resolved
+                      </div>
+                    )}
+                    <button
+                      onClick={() => remove(item._id)}
+                      className="flex-1 py-2 text-sm font-medium text-red-500 bg-red-50 hover:bg-red-100 rounded-xl border border-red-100 transition-all duration-200 flex items-center justify-center gap-1.5"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

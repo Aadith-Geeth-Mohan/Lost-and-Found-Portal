@@ -6,6 +6,7 @@ const itemSchema = new mongoose.Schema({
   type: { type: String, enum: ['lost', 'found'] },
   location: String,
   image: String,
+  contact: String,
   status: { type: String, default: 'open' },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });

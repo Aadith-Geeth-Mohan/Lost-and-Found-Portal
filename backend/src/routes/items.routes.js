@@ -26,7 +26,13 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => res.json(await Item.findById(req.params.id).populate('user', 'name')));
-router.put('/:id', auth, async (req, res) => res.json(await Item.findByIdAndUpdate(req.params.id, req.body, { new: true })));
+router.put('/:id', auth, async (req, res) => {
+  const item = await Item.findById(req.params.id);
+  if (!item) return res.status(404).json({ msg: 'Item not found' });
+  if (item.user.toString() !== req.user.id) return res.status(403).json({ msg: 'Not your item' });
+  const updated = await Item.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(updated);
+});
 router.delete('/:id', auth, async (req, res) => { await Item.findByIdAndDelete(req.params.id); res.json({ ok: true }); });
 
 router.get('/admin/all', auth, admin, async (req, res) => {
