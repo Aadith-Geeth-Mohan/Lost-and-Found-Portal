@@ -4,11 +4,15 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ReportItem() {
   const [form, setForm] = useState({ title: '', description: '', category: '', type: 'lost', location: '' });
+  const [image, setImage] = useState(null);
   const nav = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await api.post('/items', form);
+    const fd = new FormData();
+    Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+    if (image) fd.append('image', image);
+    await api.post('/items', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
     nav('/dashboard');
   };
 
@@ -23,6 +27,7 @@ export default function ReportItem() {
       <textarea className="border p-2 w-full rounded" placeholder="Description" onChange={e => setForm({ ...form, description: e.target.value })} />
       <input className="border p-2 w-full rounded" placeholder="Category" onChange={e => setForm({ ...form, category: e.target.value })} />
       <input className="border p-2 w-full rounded" placeholder="Location" onChange={e => setForm({ ...form, location: e.target.value })} />
+      <input type="file" onChange={e => setImage(e.target.files[0])} />
       <button className="bg-green-600 text-white px-4 py-2 w-full rounded">Submit</button>
     </form>
   );

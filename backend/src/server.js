@@ -1,3 +1,4 @@
+require('dns').setServers(['8.8.8.8', '8.8.4.4']);
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -10,7 +11,6 @@ connectDB();
 const allowedOrigin = process.env.CLIENT_URL?.replace(/\/$/, '');
 app.use(cors({ origin: allowedOrigin || '*' }));
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
 
 app.use('/api/auth', require('./routes/auth.routes'));
 
