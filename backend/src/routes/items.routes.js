@@ -10,8 +10,20 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
 });
 
 router.get('/mine', auth, async (req, res) => res.json(await Item.find({ user: req.user.id })));
+
+router.get('/', async (req, res) => {
+  const { search, category, type } = req.query;
+  const filter = {};
+  if (search) filter.$text = { $search: search };
+  if (category) filter.category = category;
+  if (type) filter.type = type;
+  res.json(await Item.find(filter).populate('user', 'name').sort({ createdAt: -1 }));
+});
+
 router.get('/:id', async (req, res) => res.json(await Item.findById(req.params.id).populate('user', 'name')));
 router.put('/:id', auth, async (req, res) => res.json(await Item.findByIdAndUpdate(req.params.id, req.body, { new: true })));
 router.delete('/:id', auth, async (req, res) => { await Item.findByIdAndDelete(req.params.id); res.json({ ok: true }); });
+
+
 
 module.exports = router;
