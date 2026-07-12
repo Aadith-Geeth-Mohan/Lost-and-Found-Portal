@@ -19,7 +19,12 @@ router.get('/mine', auth, async (req, res) => res.json(await Item.find({ user: r
 router.get('/', async (req, res) => {
   const { search, category, type } = req.query;
   const filter = {};
-  if (search) filter.$text = { $search: search };
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } }
+    ];
+  }
   if (category) filter.category = category;
   if (type) filter.type = type;
   res.json(await Item.find(filter).populate('user', 'name').sort({ createdAt: -1 }));
