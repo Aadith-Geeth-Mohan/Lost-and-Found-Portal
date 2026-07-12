@@ -2,6 +2,9 @@
 MERN app for reporting/searching lost and found campus items.
 
 ## Live
+
+Deployed with Render as Backend and Netlify as Frontend.
+
 Frontend: https://lost-and-found-aadith.netlify.app
 Backend: https://lost-and-found-portal-u13d.onrender.com
 
